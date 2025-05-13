@@ -11,7 +11,7 @@ struct Student
     char name[50];
     float n1;
     float n2;
-    float averege;
+    float average;
 
     struct Student *prev;
     struct Student *next;
@@ -75,7 +75,7 @@ void Insert(node *head)
     scanf("%f", &newNode->n1);
     printf("\nDigite a segunda nota do aluno inserido:\n");
     scanf("%f", &newNode->n2);
-    newNode->averege = Calc(&newNode->n1, &newNode->n2);
+    newNode->average = Calc(&newNode->n1, &newNode->n2);
     if (head->next == NULL)
     { // se a lista está vazia insere no inicio
         head->next = newNode;
@@ -90,19 +90,63 @@ void Insert(node *head)
 }
 void Remove(node *head)
 {
-    node *aux = head->next;
+    long long int cpf = 0;
     if (head->next == NULL)
     {
-        printf("\nLista vazia, impossivel remover!\n");
+        printf("\nLista está vazia, impossivel remover!\n");
+        return;
+    }
+    if (head->next != NULL)
+    {
+        printf("\nDigite o número do cpf do aluno que deseja remover:\n");
+        scanf("%lld", &cpf);
+        node *aux = head->next;
+        node *previus = head;
+        while (aux != NULL)
+        {
+            if (aux->cpf == cpf)
+            {
+                previus->next = aux->next;
+                if (aux->next != NULL)
+                {
+                    previus->next->prev = previus;
+                }
+                free(aux);
+                printf("\nRemovido com sucesso!\n");
+                return;
+            }
+            previus = aux;
+            aux = aux->next;
+        }
+        printf("\nO número do cpf não foi encontrado\n");
     }
 }
-
 void Edit(node *head)
 {
-    node *aux = head->next;
+    long long int cpf = 0;
     if (head->next == NULL)
     {
         printf("\nLista vazia, impossivel editar!\n");
+        return;
+    }
+    printf("\nDigite o cpf do aluno o qual deseja editar!\n");
+    scanf("%lld", &cpf);
+    node *aux = head->next;
+    while (aux != NULL)
+    {
+        if (aux->cpf == cpf)
+        {
+            printf("\nDigite o novo valor do campo cpf\n");
+            scanf("%lld", &aux->cpf);
+            printf("\nDigite o novo valor do campo nome\n");
+            scanf("%s", aux->name);
+            printf("\nDigite o novo valor do campo nota 1\n");
+            scanf("%f", &aux->n1);
+            printf("\nDigite o novo valor do campo nota 2\n");
+            scanf("%f", &aux->n2);
+            aux->average = Calc(&aux->n1, &aux->n2);
+        }
+        aux = aux->next;
     }
 }
 
@@ -111,6 +155,7 @@ void List(node *head)
     if (head->next == NULL)
     {
         printf("\nA lista está vazia, impossivel listar!\n");
+        return;
     }
     else
     {
@@ -122,7 +167,7 @@ void List(node *head)
             printf("\nNOME-------------%s", aux->name);
             printf("\nNOTA 1-----------%f", aux->n1);
             printf("\nNOTA 2-----------%f", aux->n2);
-            printf("\nMEDIA------------%f", aux->averege);
+            printf("\nMEDIA------------%f", aux->average);
             printf("\n------------------");
             aux = aux->next;
         }
