@@ -31,6 +31,12 @@ node *Allocation()
     return head;
 }
 
+// Função que realiza o calculo da média
+float Calc(float *n1, float *n2)
+{
+    return (*n1 + *n2) / 2;
+}
+
 void Insert(node *head)
 {
     node *newNode = (node *)malloc(sizeof(node));
@@ -47,20 +53,21 @@ void Insert(node *head)
     while (aux != NULL)
     {
         if (aux->cpf == newNode->cpf)
-        {
+        { // verifica se existe duplicatas
             printf("\n O cpf já foi cadastrado anteriormente!\n");
+            free(newNode);
             return;
         }
         else if (aux->cpf > newNode->cpf)
-        {
+        { // insere ordenado, do menor ao maior, verifica se o nó aux atual é maior que o novo nó, se for ele é alocado antes de aux
             aux->prev = newNode;
             newNode->prev = previus;
             newNode->next = aux;
             previus->next = newNode;
             break;
         }
-        previus = aux;
-        aux = aux->next;
+        previus = aux;   // ponteiro previus para ter a referencia a aux anterior que é sempre att
+        aux = aux->next; // ponteiro aux sendo att no loop tbm
     }
     printf("\nDigite o nome do aluno inserido\n");
     scanf("%s", newNode->name);
@@ -68,38 +75,65 @@ void Insert(node *head)
     scanf("%f", &newNode->n1);
     printf("\nDigite a segunda nota do aluno inserido:\n");
     scanf("%f", &newNode->n2);
+    newNode->averege = Calc(&newNode->n1, &newNode->n2);
     if (head->next == NULL)
-    {
+    { // se a lista está vazia insere no inicio
         head->next = newNode;
         newNode->prev = head;
     }
+    else
+    { // se entrou nesse else, ele será maior que todos os outros nós, sendo inserido no final
+        previus->next = newNode;
+        newNode->prev = previus;
+        return;
+    }
 }
-/*void Remove(node *head){
-    printf("Remove...\n");
-}
-
-void Edit(node *head){
-    printf("Editando...\n");
-}
-*/
-void List(node *head)
+void Remove(node *head)
 {
     node *aux = head->next;
     if (head->next == NULL)
     {
-        printf("\nA lista está vazia!\n");
+        printf("\nLista vazia, impossivel remover!\n");
+    }
+}
+
+void Edit(node *head)
+{
+    node *aux = head->next;
+    if (head->next == NULL)
+    {
+        printf("\nLista vazia, impossivel editar!\n");
+    }
+}
+
+void List(node *head)
+{
+    if (head->next == NULL)
+    {
+        printf("\nA lista está vazia, impossivel listar!\n");
     }
     else
     {
-        
+        node *aux = head->next;
+        while (aux != NULL)
+        {
+            printf("\n------------------");
+            printf("\nCPF--------------%lld", aux->cpf);
+            printf("\nNOME-------------%s", aux->name);
+            printf("\nNOTA 1-----------%f", aux->n1);
+            printf("\nNOTA 2-----------%f", aux->n2);
+            printf("\nMEDIA------------%f", aux->averege);
+            printf("\n------------------");
+            aux = aux->next;
+        }
     }
 }
 
 // Função que exibe o menu
 int Menu(int *op, node *head)
 {
-    printf("\nDigite a opção desejada:");
-    printf("\n-----------------------------");
+    printf("\n\nDigite a opção desejada:");
+    printf("\n------------------");
     printf("\n0 - PARA SAIR");
     printf("\n1 - PARA INSERIR");
     printf("\n2 - PARA REMOVER");
@@ -116,10 +150,10 @@ int Menu(int *op, node *head)
         Insert(head);
         break;
     case 2:
-        // Remove(head);
+        Remove(head);
         break;
     case 3:
-        // Edit(head);
+        Edit(head);
         break;
     case 4:
         List(head);
